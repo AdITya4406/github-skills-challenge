@@ -1,9 +1,15 @@
 import json
 
-from anomaly_detector import AnomalyDetector
-from event_consumer import EventConsumer
-from event_producer import EventProducer
-from event_topic import EventTopic
+try:
+    from .anomaly_detector import AnomalyDetector
+    from .event_consumer import EventConsumer
+    from .event_producer import EventProducer
+    from .event_topic import EventTopic
+except ImportError:
+    from anomaly_detector import AnomalyDetector
+    from event_consumer import EventConsumer
+    from event_producer import EventProducer
+    from event_topic import EventTopic
 
 
 def load_data(file_path):
@@ -14,15 +20,12 @@ def load_data(file_path):
 def run_pipeline(file_path):
     data = load_data(file_path)
 
-    # INTENTIONAL ASSESSMENT ISSUE #2
     producer_topic = EventTopic("service-events")
 
     detector = AnomalyDetector()
     producer = EventProducer(producer_topic)
 
-    # INTENTIONAL ASSESSMENT ISSUE #3
-    consumer_topic = EventTopic("anomaly-events")
-    consumer = EventConsumer(consumer_topic)
+    consumer = EventConsumer(producer_topic)
 
     detected_events = []
 
